@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 import com.example.demo.models.entities.User;
+import com.example.demo.repositories.PostRepository;
 import com.example.demo.repositories.UserRepository;
 
 @Configuration
@@ -18,9 +19,13 @@ public class TestConfig {
 	@Autowired
 	private UserRepository userRepository;
 	
+	@Autowired
+	private PostRepository postRepository;
+	
 	@PostConstruct
 	public void init() {
 		userRepository.deleteAll();
+		postRepository.deleteAll();
 		
 		User user1 = new User(null, "Maria Brown" , "maria@gmail.com");
 		User user2 = new User(null, "Alex Green" , "alex@gmail.com");
