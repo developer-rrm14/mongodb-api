@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.exceptions.ResourceNotFoundException;
+import com.example.demo.models.dto.PostDTO;
 import com.example.demo.models.dto.UserDTO;
 import com.example.demo.models.entities.User;
 import com.example.demo.repositories.UserRepository;
@@ -45,6 +46,12 @@ public class UserService {
 	public void delete(String id) {
 		getEntityById(id);
 		userRepository.deleteById(id);
+	}
+	
+	public List<PostDTO> getUserPosts(String id){
+		User user = getEntityById(id);
+		return user.getPosts().stream().map(x-> new PostDTO(x)).collect(Collectors.toList());
+		
 	}
 
 	private void copyDtoEntity(UserDTO dto, User entity) {
