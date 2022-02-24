@@ -1,5 +1,7 @@
 package com.example.demo.services;
 
+import java.time.Instant;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -17,9 +19,7 @@ public class PostService {
 	
 	@Autowired
 	private PostRepository postRepository;
-	
-	
-	
+		
 	public PostDTO findById(String id) {
 		Post entity = getEntityById(id);
 		return new PostDTO(entity);
@@ -31,13 +31,29 @@ public class PostService {
 		return list.stream().map(x-> new PostDTO(x)).collect(Collectors.toList());
 	}
 	
+	public List<PostDTO> fullSearch(String text, String start, String end){
+		
+		Instant startMoment = convertMoment(start, Instant.ofEpochMilli(0L));
+		Instant endMoment = convertMoment(end, Instant.now());
+		
+		List<Post> list = postRepository.fullSearch(text, startMoment, endMoment);
+		return list.stream().map(x-> new PostDTO(x)).collect(Collectors.toList());
+	}
+	
 	
 	private Post getEntityById(String id) {
 		Optional<Post> result = postRepository.findById(id);
 		return result.orElseThrow(() -> new ResourceNotFoundException("Objeto Não Encontrado"));
 	}
 	
-	
+	private Instant convertMoment(String originalString, Instant alternative) {
+		try {
+			return Instant.parse(originalString);
+		}catch(DateTimeParseException e) {
+			return alternative;
+		}
+	}
+
 
 
 }
